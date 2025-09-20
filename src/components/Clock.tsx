@@ -1,12 +1,17 @@
-import { type FC, useEffect, useState } from "react";
+import { type FC, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/style.module.css";
+import { useAtom, atom } from "jotai";
+
+const clockAtom = atom("");
 
 interface Props {
   withRefetch?: Boolean;
+  initialFetch?: Boolean;
 }
-const Clock: FC<Props> = ({ withRefetch }) => {
-  const [clock, setClock] = useState("");
+
+const Clock: FC<Props> = ({ withRefetch, initialFetch }) => {
+  const [clock, setClock] = useAtom(clockAtom);
   const refetch = () => {
     axios
       .request<{ data: string }>({
@@ -17,7 +22,7 @@ const Clock: FC<Props> = ({ withRefetch }) => {
       .catch((err) => console.log(err));
   };
   useEffect(() => {
-    refetch();
+    initialFetch && refetch();
   }, []);
 
   if (!withRefetch) {
