@@ -1,33 +1,34 @@
-import { type FC, useEffect, useState } from "react";
-import axios from "axios";
+import { type FC, useEffect } from "react";
 import styles from "../styles/style.module.css";
+import { atom, useAtom } from "jotai";
 
 interface Props {
-  withRefetch?: Boolean;
+  bodyComponent?: boolean;
+  initialFetch?: boolean;
 }
-const Clock: FC<Props> = ({ withRefetch }) => {
-  const [clock, setClock] = useState("");
-  const refetch = () => {
-    axios
-      .request<{ data: string }>({
-        method: "GET",
-        url: "/api/clock",
-      })
-      .then((res) => setClock(res.data.data))
-      .catch((err) => console.log(err));
-  };
+
+const clockAtom = atom("");
+
+const Clock: FC<Props> = ({ bodyComponent, initialFetch }) => {
+  const [clock, setClock] = useAtom(clockAtom);
+
   useEffect(() => {
-    refetch();
+    function initSSE() {
+      const events = new EventSource("/api/sse/clock");
+      events.onmessage = (e: any) => {
+        setClock(e?.data ?? "");
+      };
+    }
+    initialFetch && initSSE();
   }, []);
 
-  if (!withRefetch) {
+  if (!bodyComponent) {
     return <kbd>{clock}</kbd>;
   } else {
     return (
       <article>
         <div className={styles.clockWrapper}>
           <span className={styles.clockText}>{clock}</span>
-          <button onClick={() => refetch()}>Refetch</button>
         </div>
       </article>
     );

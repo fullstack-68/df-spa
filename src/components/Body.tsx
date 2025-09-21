@@ -3,13 +3,13 @@ import Clock from "./Clock";
 const Body: FC = () => {
   return (
     <main style={{ padding: "1rem 0" }}>
-      <h1>useEffect</h1>
-      <Clock withRefetch={true} />
-      <Clock withRefetch={true} />
-      <Clock withRefetch={true} />
-      <Clock withRefetch={true} />
-      <Clock withRefetch={true} />
-      <Clock withRefetch={true} />
+      <h1>Server-Sent Event (and Jotai)</h1>
+      <Clock bodyComponent={true} initialFetch={true} />
+      <Clock bodyComponent={true} />
+      <Clock bodyComponent={true} />
+      <Clock bodyComponent={true} />
+      <Clock bodyComponent={true} />
+      <Clock bodyComponent={true} />
     </main>
   );
 };
